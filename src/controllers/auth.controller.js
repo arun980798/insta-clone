@@ -1,5 +1,5 @@
-const usermodel = require("../models/user.model"); //take user module to add new user to the db
-const crypto = require("crypto"); // ye package pass ko hash karne ke kam ata h
+const usermodel = require("../models/user.model");
+const crypto = require("crypto"); 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
 
@@ -7,30 +7,27 @@ const bcrypt = require("bcryptjs")
 
 
 async function rigistercontroller (req, res){
-  const { email, username, password, bio, profileImage } = req.body; //ye sara data user clint side se ayega or req.body me ayega vahe se milega
+  const { email, username, password, bio, profileImage } = req.body; 
   const userallreadexit = await usermodel.findOne({
     $or: [
-      // ye or opratior h ye andar deya hua data h usme se 1 be milta h to usko phele de ke khatam karega koi be 1 condition true hue to bhar true kar dega
       { username },
       { email },
     ],
-  }); // go to db and check is user exist or not by email or username any one
+  }); 
   if (userallreadexit) {
-    // run if  is user exit true
+   
     return res.status(409).json({
       message: "user alrady exist ",
     });
   }
-  //ye data nakal ke leke ayega or userexist me jake  dal dega
-  const hash = await  bcrypt.hash(password,10); //normal pass ko  1 vaiable me save karenge in hash form hash pass me save karenge
-
+  const hash = await  bcrypt.hash(password,10);
   const user = await usermodel.create({
     username,
     email,
     bio,
     profileImage,
     password: hash,
-  }); //1 user model create hua h
+  }); 
 
   const token = jwt.sign(
     {
@@ -38,7 +35,7 @@ async function rigistercontroller (req, res){
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
-  ); //token banane ke leye requirement data user ka ho or unique ho or jwt token banata h
+  ); 
   res.cookie("token", token);
 
   res.status(201).json({
