@@ -1,6 +1,6 @@
 ==> auth 
-    =rigster  kam = user ka data save karna uske  device me cookie dalna or data dalna 
-    =login 
+    =rigster  kam = user ka data save karna uske  device me cookie dalna or data dalna   (done)
+    =login (done)
     =logout(token blacklisting)
     =otp system 
 

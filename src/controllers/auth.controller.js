@@ -1,21 +1,13 @@
 const usermodel = require("../models/user.model"); //take user module to add new user to the db
 const crypto = require("crypto"); // ye package pass ko hash karne ke kam ata h
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs")
 
 
 
 
 async function rigistercontroller (req, res){
   const { email, username, password, bio, profileImage } = req.body; //ye sara data user clint side se ayega or req.body me ayega vahe se milega
-
-  // const isuserexistbyemail = await usermodel.findOne({email});//finding user by email and store in isuserexit variable if have isuser give true then we use if else condition to make opration
-
-  // if(isuserexistbyemail){// run if  is user exit true
-  //     return res.status(409).json({
-  //         message:"user alrady exist "
-  //     })
-  // }
-
   const userallreadexit = await usermodel.findOne({
     $or: [
       // ye or opratior h ye andar deya hua data h usme se 1 be milta h to usko phele de ke khatam karega koi be 1 condition true hue to bhar true kar dega
@@ -30,7 +22,7 @@ async function rigistercontroller (req, res){
     });
   }
   //ye data nakal ke leke ayega or userexist me jake  dal dega
-  const hash = crypto.createHash("sha256").update(password).digest("hex"); //normal pass ko  1 vaiable me save karenge in hash form hash pass me save karenge
+  const hash = await  bcrypt.hash(password,10); //normal pass ko  1 vaiable me save karenge in hash form hash pass me save karenge
 
   const user = await usermodel.create({
     username,
@@ -72,9 +64,9 @@ async function logincontroller (req, res){
   if (!user) {
     return res.status(404).json([{ message: "user not found " }]);
   }
-  const hash = crypto.createHash("sha256").update(password).digest("hex");
+  
 
-  const ispasswordvalid = hash == user.password;
+  const ispasswordvalid = await bcrypt.compare(password,user.password);
 
   if (!ispasswordvalid) {
     return res.status(401).json({
@@ -102,6 +94,7 @@ async function logincontroller (req, res){
     },
   });
 }
+
 
 
 
