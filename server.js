@@ -1,6 +1,10 @@
+require('dotenv').config();//this add dotenv data 
+
+
+
 const app = require("./src/app")
 const connectodb = require("./src/config/database")
-require('dotenv').config();//this add dotenv data 
+
 
 
 
