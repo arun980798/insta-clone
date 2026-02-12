@@ -24,5 +24,3 @@
 
 
 
-
-    mongodb+srv://ARUN:nG1SB2cR3HgdomxS@cluster0.o7mp0o4.mongodb.net/
