@@ -13,6 +13,6 @@ postrouter.post("/",uplode.single("imgurl"),postcontroller.createpostcontroller)
 
 postrouter.get("/",postcontroller.getpostcontroller)
 
-
+postrouter.get("/details/:postid",postcontroller.getpostdetailscontroller)
 
 module.exports = postrouter ; 

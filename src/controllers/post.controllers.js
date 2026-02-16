@@ -47,6 +47,12 @@ async function createpostcontroller(req, res) {
 
 async function getpostcontroller(req, res) {
   const token = req.cookies.token;
+  if(!token){
+    res.status(401).json({
+      message:"token is not present "
+    })
+  }
+
 
   let decoded;
   try {
@@ -69,7 +75,48 @@ async function getpostcontroller(req, res) {
   })
 }
 
+async function getpostdetailscontroller(req,res) {
+  const token = req.cookies.token
+
+  if(!token){
+    res.status(401).json({
+      message:"token is not present "
+    })
+  }
+let decoded ;
+try{
+  decoded = jwt.verify(token,process.env.JWT_SECRET)
+}catch(err){
+   return res.status(401).json({
+      message: "token expire or unauthreise acces ",
+    });
+}
+const userid = decoded.id
+const postid = req.params.postid
+
+const post = await postmodel.findById(postid)
+if(!post){
+  return res.status(404).json({
+    message:"post not found "
+  })
+}
+
+const isvaliduser = post.user.toString === userid.toString;
+
+if(!isvaliduser)
+return res.status(403).json({
+  message:"forbidden contant  "
+})
+
+return res.status(201).json({
+  message:"post fetched ",
+  post
+})
+}
+
+
 module.exports = {
   createpostcontroller,
   getpostcontroller,
+  getpostdetailscontroller,
 };
