@@ -9,4 +9,10 @@ const uplode = multer({storage:multer.memoryStorage()})
 postrouter.post("/",uplode.single("imgurl"),postcontroller.createpostcontroller)
 
 
+// user request kare or usko uske sare post mil jye 
+
+postrouter.get("/",postcontroller.getpostcontroller)
+
+
+
 module.exports = postrouter ; 
