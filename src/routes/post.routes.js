@@ -3,16 +3,16 @@ const postrouter = express.Router();
 const postcontroller = require("../controllers/post.controllers")
 const multer = require("multer")
 const uplode = multer({storage:multer.memoryStorage()})
+const identifyuser = require("../middlewares/auth.middleware")
 
 
-
-postrouter.post("/",uplode.single("imgurl"),postcontroller.createpostcontroller)
+postrouter.post("/",uplode.single("imgurl"),identifyuser,postcontroller.createpostcontroller)
 
 
 // user request kare or usko uske sare post mil jye 
 
-postrouter.get("/",postcontroller.getpostcontroller)
+postrouter.get("/" ,identifyuser,postcontroller.getpostcontroller)
 
-postrouter.get("/details/:postid",postcontroller.getpostdetailscontroller)
+postrouter.get("/details/:postid" ,identifyuser ,postcontroller.getpostdetailscontroller)
 
 module.exports = postrouter ; 

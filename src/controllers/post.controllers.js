@@ -11,22 +11,7 @@ const imagekit = new ImageKit({
 });
 
 async function createpostcontroller(req, res) {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(401).json({
-      message: "token not provided",
-    });
-  }
-
-  let decoded;
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(401).json({
-      message: "user not authorized",
-    });
-  }
+  
   const file = await imagekit.files.upload({
     file: await toFile(Buffer.from(req.file.buffer), "file"),
     fileName: "Test",
@@ -36,7 +21,7 @@ async function createpostcontroller(req, res) {
   const post = await postmodel.create({
     caption: req.body.caption,
     imgurl: file.url,
-    user: decoded.id,
+    user: req.user.id,
   });
 
   res.status(201).json({
@@ -46,24 +31,8 @@ async function createpostcontroller(req, res) {
 }
 
 async function getpostcontroller(req, res) {
-  const token = req.cookies.token;
-  if(!token){
-    res.status(401).json({
-      message:"token is not present "
-    })
-  }
-
-
-  let decoded;
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(402).json({
-      message: "token expire or unauthreise acces ",
-    });
-  }
-
-  const userid = decoded.id
+ 
+  const userid = req.user.id
 
   const post = await postmodel.find({
     user:userid
@@ -76,22 +45,12 @@ async function getpostcontroller(req, res) {
 }
 
 async function getpostdetailscontroller(req,res) {
-  const token = req.cookies.token
 
-  if(!token){
-    res.status(401).json({
-      message:"token is not present "
-    })
-  }
-let decoded ;
-try{
-  decoded = jwt.verify(token,process.env.JWT_SECRET)
-}catch(err){
-   return res.status(401).json({
-      message: "token expire or unauthreise acces ",
-    });
-}
-const userid = decoded.id
+
+
+
+
+const userid = req.user.id
 const postid = req.params.postid
 
 const post = await postmodel.findById(postid)
