@@ -1,41 +1,35 @@
 const usermodel = require("../models/user.model");
-const crypto = require("crypto"); 
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 
-
-
-
-async function rigistercontroller (req, res){
-  const { email, username, password, bio, profileImage } = req.body; 
+async function rigistercontroller(req, res) {
+  const { email, username, password, bio, profileImage } = req.body;
   const userallreadexit = await usermodel.findOne({
-    $or: [
-      { username },
-      { email },
-    ],
-  }); 
+    $or: [{ username }, { email }],
+  });
   if (userallreadexit) {
-   
     return res.status(409).json({
       message: "user alrady exist ",
     });
   }
-  const hash = await  bcrypt.hash(password,10);
+  const hash = await bcrypt.hash(password, 10);
   const user = await usermodel.create({
     username,
     email,
     bio,
     profileImage,
     password: hash,
-  }); 
+  });
 
   const token = jwt.sign(
     {
       id: user._id,
+      username: user.username,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
-  ); 
+  );
   res.cookie("token", token);
 
   res.status(201).json({
@@ -48,12 +42,7 @@ async function rigistercontroller (req, res){
   });
 }
 
-
-
-
-
-
-async function logincontroller (req, res){
+async function logincontroller(req, res) {
   const { username, email, password } = req.body;
   const user = await usermodel.findOne({
     $or: [{ username }, { email }],
@@ -61,9 +50,8 @@ async function logincontroller (req, res){
   if (!user) {
     return res.status(404).json([{ message: "user not found " }]);
   }
-  
 
-  const ispasswordvalid = await bcrypt.compare(password,user.password);
+  const ispasswordvalid = await bcrypt.compare(password, user.password);
 
   if (!ispasswordvalid) {
     return res.status(401).json({
@@ -74,9 +62,10 @@ async function logincontroller (req, res){
   const token = jwt.sign(
     {
       id: user._id,
+      username: user.username,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "1d" },  
+    { expiresIn: "1d" },
   );
 
   res.cookie("token", token);
@@ -92,11 +81,7 @@ async function logincontroller (req, res){
   });
 }
 
-
-
-
-
 module.exports = {
-    rigistercontroller,
-    logincontroller
-}
+  rigistercontroller,
+  logincontroller,
+};

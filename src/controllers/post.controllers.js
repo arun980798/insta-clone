@@ -45,11 +45,7 @@ async function getpostcontroller(req, res) {
 }
 
 async function getpostdetailscontroller(req,res) {
-
-
-
-
-
+  
 const userid = req.user.id
 const postid = req.params.postid
 

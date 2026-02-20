@@ -3,14 +3,10 @@ const mongoose = require("mongoose");
 const followschema = new mongoose.Schema(
   {
     follower: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-      required: [true, "follower id is required "],
+     type:"String",
     },
     followee: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-      required: [true, "followee id is required "],
+      type:"String",
     },
   },
   {
@@ -20,3 +16,7 @@ const followschema = new mongoose.Schema(
 
 
 const followmodel = mongoose.model("follows", followschema);
+
+
+
+module.exports = followmodel;
