@@ -62,7 +62,7 @@ async function unfollowusercontroller(req, res) {
       message: `you are not following ${followeeusername}`,
     })
   }
-  await followmodel.findbyidAndDelete(isuserfollowing._id);
+  await followmodel.findByIdAndDelete(isuserfollowing._id);
 
   res.status(200).json({
     message: `you have unfollowed ${followeeusername}`,
