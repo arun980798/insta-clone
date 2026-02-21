@@ -13,6 +13,7 @@ const followschema = new mongoose.Schema(
     timestamp: true,
   },
 );
+followschema.index({ follower: 1, followee: 1 }, { unique: true });
 
 
 const followmodel = mongoose.model("follows", followschema);
